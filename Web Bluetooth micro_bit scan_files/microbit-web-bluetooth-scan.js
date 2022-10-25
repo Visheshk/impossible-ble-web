@@ -162,17 +162,19 @@ function printCharacteristic(characteristic) {
 var nSer = Infinity;
 var nChar = Infinity;
 var stringTable = "";
-
+var myDescriptor;
+var a1DataChar;
+var a1ThreshChar;
 /**
  * Function that connects to a Bluetooth device, prints all its services and
  * all its characteristics.
  */
-function connect() {
+async function connect() {
     addLog("Requesting micro:bit Bluetooth devices... ", false);
     if (!navigator.bluetooth) {
         addLogError("Bluetooth not available in this browser or computer.");
     } else {
-        navigator.bluetooth.requestDevice({
+        const device = await navigator.bluetooth.requestDevice({
             // To accept all devices, use acceptAllDevices: true and remove filters.
             filters: [{namePrefix: "Gameball"}],
             // acceptAllDevices: true,
@@ -193,46 +195,65 @@ function connect() {
                 // microbitUuid.uartService[0]
             ],
         })
-        .then(device => {
+        // log('Connecting to GATT Server...');
+        var cc;
+        const server = await device.gatt.connect();
             addLog("<font color='green'>OK</font>", true);
             bluetoothDevice = device;
             addLog("Connecting to GATT server (name: <font color='blue'>" + device.name + "</font>, ID: <font color='blue'>" + device.id + "</font>)... ", false);
             device.addEventListener('gattserverdisconnected', onDisconnected);
             document.getElementById("body").style = "background-color:#D0FFD0";
-            return device.gatt.connect();
-        })
-        .then(server => {
+        const services = await server.getPrimaryServices();
             addLog("<font color='green'>OK</font>", true);
             addLog("Getting primary services... ", false);
-            return server.getPrimaryServices();
-        })
-        .then(services => {
+        
             addLog("<font color='green'>OK</font>", true);
             addLog("Getting characteristics... ", false);
             nSer = services.length;
-            services.forEach(service => {
-                service.getCharacteristics()
-                .then(characteristics => {
-                    nChar = characteristics.length;
-                    printService(service);
-                    nSer--;
-                    characteristics.forEach(characteristic => {
-                        printCharacteristic(characteristic);
-                        nChar--;
-                        if ((nSer === 0) && (nChar === 0) && tableFormat) {
-                            addLog('<table><tr><th>Service/Characteristic</th><th>Name</th><th>UUID</th><th>Available properties</th></tr>' + stringTable + '</table>', false);
-                            stringTable = "";
-                        };
-                    });
-                })
-                .catch(error => {
-                    addLogError(error);
-                });
+        services.forEach(async (service) =>  {
+            var characteristics = await service.getCharacteristics();
+            nChar = characteristics.length;
+            printService(service);
+            nSer--;
+            // console.log(characteristics);
+            characteristics.forEach(async (characteristic) => {
+                if (characteristic.uuid == "1006bd26-daad-11e5-b5d2-0a1d41d68578"){
+                    //** settings
+                    await characteristic.writeValue(Uint8Array.of(0x197));
+                    // console.log(cc = characteristic);
+                    // myDescriptor = characteristic.getDescriptor("")
+                }
+                else if (characteristic.uuid == "1006bd28-daad-11e5-b5d2-0a1d41d68578") {
+                    //** threshold
+                    await characteristic.writeValue(Uint16Array.of(0xB97008));
+                }
+                else if (characteristic.uuid == "1006bfd8-daad-11e5-b5d2-0a1d41d68578") {
+                    //** threshold
+                    a1DataChar = characteristic;
+                    startReadingData(a1DataChar);
+                }
+                printCharacteristic(characteristic);
+                nChar--;
+                if ((nSer === 0) && (nChar === 0) && tableFormat) {
+                    addLog('<table><tr><th>Service/Characteristic</th><th>Name</th><th>UUID</th><th>Available properties</th></tr>' + stringTable + '</table>', false);
+                    stringTable = "";
+                };
             });
-        })
-        .catch(error => {
-            addLogError(error);
         });
+        async function startReadingData(ch) {
+            console.log(ch);
+            try {
+                while (true) {
+                    var chr = await ch.readValue()
+                    console.log(chr);
+                }    
+            }
+            catch{
+                console.log("ch over?");
+            }
+            
+
+        }
     };
 }
 
