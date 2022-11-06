@@ -241,20 +241,37 @@ async function connect() {
             });
         });
         async function startReadingData(ch) {
+            
+            await ch.startNotifications();
+              
+            await ch.addEventListener('characteristicvaluechanged', handleDataChange);
             console.log(ch);
-            try {
-                while (true) {
-                    var chr = await ch.readValue()
-                    console.log(chr);
-                }    
-            }
-            catch{
-                console.log("ch over?");
-            }
+            // ch.onchara
+            // await ch.addEventListener('oncharacteristicvaluechanged', handleBatteryLevelChanged);
+            // console.log(ch.characteristicvaluechanged);
+            // console.log(ch.oncharacteristicvaluechanged);
+            // try {
+            //     while (bluetoothDevice.gatt.connected) {
+            //         var chr = await ch.readValue()
+            //         // console.log(chr);
+            //     }    
+            // }
+            // catch{
+            //     console.log("ch over?");
+            // }
             
 
         }
+        
+
     };
+}
+
+function handleDataChange(event) {
+  console.log(event);
+  let batteryLevel = event.target.value.getUint8(0);
+  // log('> Battery Level is ' + batteryLevel + '%');
+  console.log(batteryLevel);
 }
 
 
