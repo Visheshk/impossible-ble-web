@@ -224,8 +224,19 @@ async function connect() {
                     // myDescriptor = characteristic.getDescriptor("")
                 }
                 else if (characteristic.uuid == "1006bd28-daad-11e5-b5d2-0a1d41d68578") {
+                    /**
+                     * Go to https://replit.com/languages/csharp
+                       byte[] data = new byte[]{0, 0};
+                       data[0] = (byte) (128 | (byte) (((1f) / 16.0) * 127));
+                       data[1] = 0; 
+                       Console.WriteLine(BitConverter.ToUInt16(data));
+                     * 
+                     **/
+                    
                     //** threshold
-                    await characteristic.writeValue(Uint16Array.of(0xB97008));
+                    // await characteristic.writeValue(Uint16Array.of(0xB97008));
+                    await characteristic.writeValue(Uint16Array.of(135));
+                    
                 }
                 else if (characteristic.uuid == "1006bfd8-daad-11e5-b5d2-0a1d41d68578") {
                     //** threshold
