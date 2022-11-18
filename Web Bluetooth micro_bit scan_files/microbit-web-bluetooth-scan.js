@@ -198,18 +198,34 @@ async function connect() {
         // log('Connecting to GATT Server...');
         var cc;
         const server = await device.gatt.connect();
+        const services = await server.getPrimaryServices();
             addLog("<font color='green'>OK</font>", true);
             bluetoothDevice = device;
             addLog("Connecting to GATT server (name: <font color='blue'>" + device.name + "</font>, ID: <font color='blue'>" + device.id + "</font>)... ", false);
             device.addEventListener('gattserverdisconnected', onDisconnected);
             document.getElementById("body").style = "background-color:#D0FFD0";
-        const services = await server.getPrimaryServices();
+        
             addLog("<font color='green'>OK</font>", true);
             addLog("Getting primary services... ", false);
         
             addLog("<font color='green'>OK</font>", true);
             addLog("Getting characteristics... ", false);
             nSer = services.length;
+            aService = await server.getPrimaryService("c75ea010-ede4-4ab4-8f96-17699ebaf1b8");
+            settings = await aService.getCharacteristic("1006bd26-daad-11e5-b5d2-0a1d41d68578")
+            await settings.writeValue(Uint8Array.of(0x197));
+            threshold = await aService.getCharacteristic("1006bd28-daad-11e5-b5d2-0a1d41d68578")
+            await threshold.writeValue(Uint16Array.of(135));
+            a1DataChar = await aService.getCharacteristic("1006bfd8-daad-11e5-b5d2-0a1d41d68578");
+            startReadingData(a1DataChar);
+            // streamMove = await service.getCharacteristic("1006bd28-daad-11e5-b5d2-0a1d41d68578")
+            // await characteristic.writeValue(Uint8Array.of(1));
+            sService = await server.getPrimaryService("a54d785d-d674-4cda-b794-ca049d4e044b");
+            streamChar = await sService.getCharacteristic("a54d785d-d675-4cda-b794-ca049d4e044b");
+            await streamChar.writeValue(Uint8Array.of(2));
+            streamRead = await sService.getCharacteristic("a54d785d-d676-4cda-b794-ca049d4e044b");
+            startReadingData(streamRead);
+        
         services.forEach(async (service) =>  {
             var characteristics = await service.getCharacteristics();
             nChar = characteristics.length;
@@ -217,32 +233,6 @@ async function connect() {
             nSer--;
             // console.log(characteristics);
             characteristics.forEach(async (characteristic) => {
-                if (characteristic.uuid == "1006bd26-daad-11e5-b5d2-0a1d41d68578"){
-                    //** settings
-                    await characteristic.writeValue(Uint8Array.of(0x197));
-                    // console.log(cc = characteristic);
-                    // myDescriptor = characteristic.getDescriptor("")
-                }
-                else if (characteristic.uuid == "1006bd28-daad-11e5-b5d2-0a1d41d68578") {
-                    /**
-                     * Go to https://replit.com/languages/csharp
-                       byte[] data = new byte[]{0, 0};
-                       data[0] = (byte) (128 | (byte) (((1f) / 16.0) * 127));
-                       data[1] = 0; 
-                       Console.WriteLine(BitConverter.ToUInt16(data));
-                     * 
-                     **/
-                    
-                    //** threshold
-                    // await characteristic.writeValue(Uint16Array.of(0xB97008));
-                    await characteristic.writeValue(Uint16Array.of(135));
-                    
-                }
-                else if (characteristic.uuid == "1006bfd8-daad-11e5-b5d2-0a1d41d68578") {
-                    //** threshold
-                    a1DataChar = characteristic;
-                    startReadingData(a1DataChar);
-                }
                 printCharacteristic(characteristic);
                 nChar--;
                 if ((nSer === 0) && (nChar === 0) && tableFormat) {
@@ -252,26 +242,9 @@ async function connect() {
             });
         });
         async function startReadingData(ch) {
-            
             await ch.startNotifications();
-              
             await ch.addEventListener('characteristicvaluechanged', handleDataChange);
             console.log(ch);
-            // ch.onchara
-            // await ch.addEventListener('oncharacteristicvaluechanged', handleBatteryLevelChanged);
-            // console.log(ch.characteristicvaluechanged);
-            // console.log(ch.oncharacteristicvaluechanged);
-            // try {
-            //     while (bluetoothDevice.gatt.connected) {
-            //         var chr = await ch.readValue()
-            //         // console.log(chr);
-            //     }    
-            // }
-            // catch{
-            //     console.log("ch over?");
-            // }
-            
-
         }
         
 
@@ -279,10 +252,13 @@ async function connect() {
 }
 
 function handleDataChange(event) {
-  console.log(event);
-  let batteryLevel = event.target.value.getUint8(0);
+  tb = event.target.value.buffer;
+  console.log(new Int16Array(tb).slice(0,8));
+  // console.log(event.target.value);
+  // console.log(event.target.service.uuid.slice(8,17));
+  // let batteryLevel = event.target.value.getUint8(0);
   // log('> Battery Level is ' + batteryLevel + '%');
-  console.log(batteryLevel);
+  // console.log(batteryLevel);
 }
 
 
