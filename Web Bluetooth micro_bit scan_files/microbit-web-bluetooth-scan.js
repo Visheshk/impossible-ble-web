@@ -15,7 +15,7 @@ var tableFormat = true;
  * Object containing the Bluetooth UUIDs of all the services and
  * characteristics of the micro:bit.
  */
-microbitUuid = {
+gameballUuid = {
     /**
      * Services
      */
@@ -62,9 +62,9 @@ microbitUuid = {
      * (or 0) if it is a characteristic.
      */
     searchUuid(uuid, serviceOrCharacteristic) {
-        for (const key in microbitUuid) {
-            if (uuid === microbitUuid[key][0]) {
-                return "<font color='blue'>" + microbitUuid[key][1] + "</font>";
+        for (const key in gameballUuid) {
+            if (uuid === gameballUuid[key][0]) {
+                return "<font color='blue'>" + gameballUuid[key][1] + "</font>";
             }
         }
         if (serviceOrCharacteristic) {
@@ -127,8 +127,41 @@ function getSupportedProperties(characteristic) {
 /**
  * Function that turns the background color red.
  */
-function onDisconnected() {
+
+async function exponentialBackoff(max, delay, toTry, success, fail) {
+  try {
+    const result = await toTry();
+    success(result);
+  } catch(error) {
+    if (max === 0) {
+      return fail();
+    }
+    time('Retrying in ' + delay + 's... (' + max + ' tries left)');
+    setTimeout(function() {
+      exponentialBackoff(--max, delay * 2, toTry, success, fail);
+    }, delay * 1000);
+  }
+}
+
+
+async function connect() {
+  exponentialBackoff(3 /* max retries */, 2 /* seconds delay */,
+    async function toTry() {
+      time('Connecting to Bluetooth Device... ');
+      await bluetoothDevice.gatt.connect();
+    },
+    function success() {
+      log('> Bluetooth Device connected. Try disconnect it now.');
+    },
+    function fail() {
+      time('Failed to reconnect.');
+    });
+  connect();
+}
+
+async function onDisconnected() {
     document.getElementById("body").style = "background-color:#FFD0D0";
+    connect();
 }
 
 
@@ -139,9 +172,9 @@ function onDisconnected() {
  */
 function printService(service) {
     if (tableFormat) {
-        stringTable += '<tr style="background-color:#D0D0D0"><td>Service</td><td>' + microbitUuid.searchUuid(service.uuid, 1) + '</td><td>' + service.uuid + '</td><td>-</td></tr>';
+        stringTable += '<tr style="background-color:#D0D0D0"><td>Service</td><td>' + gameballUuid.searchUuid(service.uuid, 1) + '</td><td>' + service.uuid + '</td><td>-</td></tr>';
     } else {
-        addLog('&nbsp;&nbsp;&nbsp;&nbsp;<b>Service: </b>' + microbitUuid.searchUuid(service.uuid, 1) + ' - ' + service.uuid, true);
+        addLog('&nbsp;&nbsp;&nbsp;&nbsp;<b>Service: </b>' + gameballUuid.searchUuid(service.uuid, 1) + ' - ' + service.uuid, true);
     };
 }
 
@@ -151,9 +184,9 @@ function printService(service) {
  */
 function printCharacteristic(characteristic) {
     if (tableFormat) {
-        stringTable += '<tr style="background-color:white"><td>Characteristic</td><td>' + microbitUuid.searchUuid(characteristic.uuid, 0) + '</td><td>' + characteristic.uuid + '</td><td>' + getSupportedProperties(characteristic) + '</td></tr>';
+        stringTable += '<tr style="background-color:white"><td>Characteristic</td><td>' + gameballUuid.searchUuid(characteristic.uuid, 0) + '</td><td>' + characteristic.uuid + '</td><td>' + getSupportedProperties(characteristic) + '</td></tr>';
     } else {
-        addLog('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Characteristic: </b>' + microbitUuid.searchUuid(characteristic.uuid, 0) + ' - ' + characteristic.uuid + ' ' + getSupportedProperties(characteristic), true);
+        addLog('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Characteristic: </b>' + gameballUuid.searchUuid(characteristic.uuid, 0) + ' - ' + characteristic.uuid + ' ' + getSupportedProperties(characteristic), true);
     };
 }
 
@@ -169,6 +202,26 @@ var a1ThreshChar;
  * Function that connects to a Bluetooth device, prints all its services and
  * all its characteristics.
  */
+
+
+accelServices = {
+    "accel1": {
+        "service": "accelerometerService", 
+        "settingsChar": "a1Config",
+        "threshChar": "a1Thresh"
+    }, 
+    "accel2": {
+        "service": "accelerometer2Service",
+        "settingsChar": "a2Config",
+        "threshChar": "a2Thresh"
+    }
+};
+
+
+// await writeCharVal(gameballUuid["accelerometerService"][0], gameballUuid["a1Config"][0], Uint8Array.of(0x197));
+// await writeCharVal(gameballUuid["accelerometerService"][0], gameballUuid["a1Thresh"][0], Uint16Array.of(135));
+// async function writeCharVal()
+
 async function connect() {
     addLog("Requesting micro:bit Bluetooth devices... ", false);
     if (!navigator.bluetooth) {
@@ -179,24 +232,43 @@ async function connect() {
             filters: [{namePrefix: "Gameball"}],
             // acceptAllDevices: true,
             optionalServices: [
-                microbitUuid.genericAccess[0], 
-                microbitUuid.genericAttribute[0], 
-                microbitUuid.deviceInformation[0], 
-                microbitUuid.accelerometerService[0], 
-                microbitUuid.gameballService[0], 
-                microbitUuid.sensorStreamService[0], 
-                // microbitUuid.magnetometerService[0], 
-                // microbitUuid.buttonService[0], 
-                // microbitUuid.ioPinService[0], 
-                // microbitUuid.ledService[0], 
-                // microbitUuid.eventService[0], 
-                // microbitUuid.dfuControlService[0], 
-                // microbitUuid.temperatureService[0], 
-                // microbitUuid.uartService[0]
+                gameballUuid.genericAccess[0], 
+                gameballUuid.genericAttribute[0], 
+                gameballUuid.deviceInformation[0], 
+                gameballUuid.accelerometerService[0], 
+                gameballUuid.accelerometer2Service[0], 
+                gameballUuid.gameballService[0], 
+                gameballUuid.sensorStreamService[0], 
+                // gameballUuid.magnetometerService[0], 
+                // gameballUuid.buttonService[0], 
+                // gameballUuid.ioPinService[0], 
+                // gameballUuid.ledService[0], 
+                // gameballUuid.eventService[0], 
+                // gameballUuid.dfuControlService[0], 
+                // gameballUuid.temperatureService[0], 
+                // gameballUuid.uartService[0]
             ],
         })
         // log('Connecting to GATT Server...');
         var cc;
+        async function getChar(serviceUuid, charUuid, server) {
+            thisService = await service.getPrimaryService(serviceUuid);
+            thisChar = await thisService.getCharacteristic(charUuid);
+            return thisChar;
+        }
+
+        function getCharId(charName) {
+            return gameballUuid[charName][0]
+        }
+
+        async function startAccel(accelName, settingsVal, thresholdVal, server) {
+            asa = accelServices[accelName]
+            accelService = await server.getPrimaryService(getCharId(asa["service"]));
+            acSetting = await accelService.getCharacteristic(getCharId(asa["settingsChar"]));
+            acThresh = await accelService.getCharacteristic(getCharId(asa["threshChar"]));
+            await acSetting.writeValue(settingsVal);
+            await acThresh.writeValue(thresholdVal);
+        }
         const server = await device.gatt.connect();
         const services = await server.getPrimaryServices();
             addLog("<font color='green'>OK</font>", true);
@@ -211,18 +283,36 @@ async function connect() {
             addLog("<font color='green'>OK</font>", true);
             addLog("Getting characteristics... ", false);
             nSer = services.length;
-            aService = await server.getPrimaryService("c75ea010-ede4-4ab4-8f96-17699ebaf1b8");
-            settings = await aService.getCharacteristic("1006bd26-daad-11e5-b5d2-0a1d41d68578")
-            await settings.writeValue(Uint8Array.of(0x197));
-            threshold = await aService.getCharacteristic("1006bd28-daad-11e5-b5d2-0a1d41d68578")
-            await threshold.writeValue(Uint16Array.of(135));
-            a1DataChar = await aService.getCharacteristic("1006bfd8-daad-11e5-b5d2-0a1d41d68578");
-            startReadingData(a1DataChar);
+            
+            /**
+             * Go to https://replit.com/languages/csharp
+               byte[] data = new byte[]{0, 0};
+               data[0] = (byte) (128 | (byte) (((1f) / 16.0) * 127));
+               data[1] = 0; 
+               Console.WriteLine(BitConverter.ToUInt16(data));
+             * 
+             **/
+            
+            await startAccel("accel1", Uint8Array.of(0x197), Uint16Array.of(135), server);
+            await startAccel("accel2", Uint8Array.of(0x647), Uint16Array.of(135), server);
+            // await startSensorStream(Uint8Array.of(3))
+
+            // aService = await server.getPrimaryService("c75ea010-ede4-4ab4-8f96-17699ebaf1b8");
+            // settings = await aService.getCharacteristic("1006bd26-daad-11e5-b5d2-0a1d41d68578")
+            // await settings.writeValue(Uint8Array.of(0x197));
+
+         
+            // threshold = await aService.getCharacteristic("1006bd28-daad-11e5-b5d2-0a1d41d68578")
+            // await threshold.writeValue(Uint16Array.of(135));
+
+            // a1DataChar = await aService.getCharacteristic("1006bfd8-daad-11e5-b5d2-0a1d41d68578");
+            // startReadingData(a1DataChar);
             // streamMove = await service.getCharacteristic("1006bd28-daad-11e5-b5d2-0a1d41d68578")
             // await characteristic.writeValue(Uint8Array.of(1));
             sService = await server.getPrimaryService("a54d785d-d674-4cda-b794-ca049d4e044b");
             streamChar = await sService.getCharacteristic("a54d785d-d675-4cda-b794-ca049d4e044b");
-            await streamChar.writeValue(Uint8Array.of(2));
+
+            await streamChar.writeValue(Uint8Array.of(3));
             streamRead = await sService.getCharacteristic("a54d785d-d676-4cda-b794-ca049d4e044b");
             startReadingData(streamRead);
         
@@ -253,7 +343,9 @@ async function connect() {
 
 function handleDataChange(event) {
   tb = event.target.value.buffer;
-  console.log(new Int16Array(tb).slice(0,8));
+  console.log(tb);
+  tba = new Uint16Array(tb);
+  console.log(tba);
   // console.log(event.target.value);
   // console.log(event.target.service.uuid.slice(8,17));
   // let batteryLevel = event.target.value.getUint8(0);
