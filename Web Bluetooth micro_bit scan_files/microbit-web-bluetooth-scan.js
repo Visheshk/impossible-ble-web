@@ -27,6 +27,7 @@ gameballUuid = {
     accelerometer2Service:                        ["d75ea010-ede4-4ab4-8f96-17699ebaf1b8", "Accelerometer 2 Service"],
     gameballService:                            ["00766963-6172-6173-6f6c-7574696f6e73", "Gameball Service"],
     sensorStreamService:                        ["a54d785d-d674-4cda-b794-ca049d4e044b", "Sensor Stream Service"],
+    capacitorService:                           ["f4ad0000-d674-4cda-b794-ca049d4e044b", "Capacitor Service"],
 
     /**
      * Characteristics
@@ -270,6 +271,17 @@ async function startReadingData(ch) {
     console.log(ch);
 }
 
+async function chargeRead(capCharacteristic) {
+    console.log(capCharacteristic);
+    cc = await capCharacteristic.readValue();
+    console.log(cc);
+    if (cc != undefined) {
+        console.log("calling againt");
+        setTimeout(chargeRead, 10000, capCharacteristic);
+    }
+}
+
+// allServices = null;
 async function startListening(device) {
     console.log("starting to listen!!!");
     const server = await device.gatt.connect();
@@ -281,14 +293,24 @@ async function startListening(device) {
 
     sService = await server.getPrimaryService("a54d785d-d674-4cda-b794-ca049d4e044b");
     streamChar = await sService.getCharacteristic("a54d785d-d675-4cda-b794-ca049d4e044b");
-    setTimeout(refreshGatt, 30001, refreshCharacteristic, streamChar, a1Chars);
+    capService = await server.getPrimaryService(gameballUuid["capacitorService"][0]);
+    capCharacteristic = await capService.getCharacteristic(gameballUuid["capV"][0]);
+    setTimeout(chargeRead, 10000, capCharacteristic);
+
 
     await streamChar.writeValue(Uint8Array.of(3));
     streamRead = await sService.getCharacteristic("a54d785d-d676-4cda-b794-ca049d4e044b");
     startReadingData(streamRead);
+    console.log(services);
+    // secondaryServices
+    // genericAttribute = await server.getPrimaryService("00001800-0000-1000-8000-00805f9b34fb");
+    // genericAttribute = await server.getCharacteristic("generic_attribute");
+    // genChars = await genericAttribute.getCharacteristics();
+    // console.log(genChars);
 
-    sService = await server.getPrimaryService("a54d785d-d674-4cda-b794-ca049d4e044b");
-    streamRead = await sService.getCharacteristic("a54d785d-d676-4cda-b794-ca049d4e044b");
+    // sService = await server.getPrimaryService("a54d785d-d674-4cda-b794-ca049d4e044b");
+    // streamRead = await sService.getCharacteristic("a54d785d-d676-4cda-b794-ca049d4e044b");
+    return services;
 }
 
 async function connect() {
@@ -296,6 +318,7 @@ async function connect() {
     if (!navigator.bluetooth) {
         addLogError("Bluetooth not available in this browser or computer.");
     } else {
+    	// console.log(navigator.bluetooth.getDevices());
         const device = await navigator.bluetooth.requestDevice({
             // To accept all devices, use acceptAllDevices: true and remove filters.
             filters: [{namePrefix: "Gameball"}],
@@ -308,6 +331,7 @@ async function connect() {
                 gameballUuid.accelerometer2Service[0], 
                 gameballUuid.gameballService[0], 
                 gameballUuid.sensorStreamService[0], 
+                gameballUuid.capacitorService[0]
                 // gameballUuid.magnetometerService[0], 
                 // gameballUuid.buttonService[0], 
                 // gameballUuid.ioPinService[0], 
@@ -322,10 +346,11 @@ async function connect() {
         var cc;
         
 
-        startListening(device);
+        services = await startListening(device);
             
         addLog("<font color='green'>OK</font>", true);
         bluetoothDevice = device;
+        console.log(device);
         addLog("Connecting to GATT server (name: <font color='blue'>" + device.name + "</font>, ID: <font color='blue'>" + device.id + "</font>)... ", false);
         device.addEventListener('gattserverdisconnected', onDisconnected);
         document.getElementById("body").style = "background-color:#D0FFD0";
@@ -347,20 +372,20 @@ async function connect() {
          **/
         
         services.forEach(async (service) =>  {
-        var characteristics = await service.getCharacteristics();
-        nChar = characteristics.length;
-        printService(service);
-        nSer--;
-        // console.log(characteristics);
-        characteristics.forEach(async (characteristic) => {
-            printCharacteristic(characteristic);
-            nChar--;
-            if ((nSer === 0) && (nChar === 0) && tableFormat) {
-                addLog('<table><tr><th>Service/Characteristic</th><th>Name</th><th>UUID</th><th>Available properties</th></tr>' + stringTable + '</table>', false);
-                stringTable = "";
-            };
+            var characteristics = await service.getCharacteristics();
+            nChar = characteristics.length;
+            printService(service);
+            nSer--;
+            // console.log(characteristics);
+            characteristics.forEach(async (characteristic) => {
+                printCharacteristic(characteristic);
+                nChar--;
+                if ((nSer === 0) && (nChar === 0) && tableFormat) {
+                    addLog('<table><tr><th>Service/Characteristic</th><th>Name</th><th>UUID</th><th>Available properties</th></tr>' + stringTable + '</table>', false);
+                    stringTable = "";
+                };
+            });
         });
-    });
     
     };
 }
