@@ -265,6 +265,7 @@ async function startAccel(accelName, settingsVal, thresholdVal, server) {
     return [acSetting, acThresh];
 }
 
+
 async function startReadingData(ch) {
     await ch.startNotifications();
     await ch.addEventListener('characteristicvaluechanged', handleDataChange);
@@ -272,11 +273,13 @@ async function startReadingData(ch) {
 }
 
 async function chargeRead(capCharacteristic) {
-    console.log(capCharacteristic);
+    // console.log(capCharacteristic);
     cc = await capCharacteristic.readValue();
-    console.log(cc);
+    ccVal = new Uint16Array(cc.buffer)[0] *(3/(2^12))
+    console.log(ccVal);
+
     if (cc != undefined) {
-        console.log("calling againt");
+        // console.log("calling againt");
         setTimeout(chargeRead, 10000, capCharacteristic);
     }
 }
@@ -390,13 +393,48 @@ async function connect() {
     };
 }
 
+
+var printData = [];
+var tagVal = -1;
+var lastTagRow = 0;
+
+function resetData() {
+    printData = [];
+}
+
+function tagData(tagVal) {
+    for (var i = lastTagRow; i<printData.length; i++) {
+        printData[i]["tag"] = tagVal;
+    }
+    lastTagRow = printData.length;
+}
+
 function handleDataChange(event) {
   tb = event.target.value.buffer;
   // console.log(tb);
   tba = new Uint16Array(tb);
   console.log(tba);
+  printData.push({
+    time: new Date().getTime(),
+    data: tba,
+    tag: -1
+  });
 }
 
+function exportData() {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    var json = JSON.stringify(printData),
+        blob = new Blob([json], {type: "octet/stream"}),
+        url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+fileName = "dataExport.json";
 
 
 /**
