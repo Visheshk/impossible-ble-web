@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!-- saved from url=(0084)https://ngammarano.github.io/microbit-web-bluetooth/microbit-web-bluetooth-scan.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            th {
+                background-color: #D0D0FF;
+            }
+        </style>
+        <title>Web Bluetooth play impossible scan</title>
+        </head><body id="body" style="background-color:#FFD0D0" class="vsc-initialized"><h1>Web Bluetooth play impossible scan</h1>
+        <p>Scan Bluetooth devices (using "BBC micro:bit" as namePrefix filter). Shows all the available Bluetooth services and characteristics, their name, UUID, and available properties.</p>
+    
+    
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+        <button onclick="resetData()">reset data</button>
+        <button onclick="tagData(1)">successful throw</button>
+        <button onclick="tagData(0)">failed throw</button>
+        <button onclick="exportData()">Export Data</button>
+        <h2>Log <button onclick="clearLog()">Clear</button></h2>
+        <p id="log" style="font-family:&#39;Courier New&#39;,Courier,monospace">Requesting micro:bit Bluetooth devices... <b><font color="red">NotFoundError: User cancelled the requestDevice() chooser.</font></b><br></p>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="./Web Bluetooth micro_bit scan_files/microbit-web-bluetooth-scan.js"></script>
+</body></html>
