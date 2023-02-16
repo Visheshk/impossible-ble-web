@@ -450,17 +450,27 @@ function handleDataChange(event) {
   // console.log(tb);
   tba = new Uint16Array(tb);
   console.log(tba);
-  printData.push({
-    time: new Date().getTime(),
-    data: tba,
-    tag: -1
-  });
+  pushObj = {}
+  tba.map((c, index) => pushObj["a" + String(index)] = c);
+  pushObj["time"] = new Date().getTime();
+  pushObj["tag"] = -1;
+  printData.push(pushObj);
 }
 
 function exportData() {
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
+    csvRows = ["time, a1x, a1y,a1z,a2x, a2y, a2z, tag"];
+    for p in printData{
+        row = printData[p].time + ", "
+        for d in range
+        printData[p].data[0]
+
+        csv
+    }
+        
+    console.log(printData);
     var json = JSON.stringify(printData),
         blob = new Blob([json], {type: "octet/stream"}),
         url = window.URL.createObjectURL(blob);
