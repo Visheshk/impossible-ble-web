@@ -2,6 +2,7 @@
 <!-- saved from url=(0093)https://ngammarano.github.io/microbit-web-bluetooth/microbit-web-bluetooth-accelerometer.html -->
 <html>
     <head>
+        <link rel="stylesheet" href="microbit-accel_files/styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Web Bluetooth micro:bit Accelerometer</title>
         <style>
@@ -9,19 +10,30 @@
               shape-rendering: auto;
             }
 
-            .line {
+/*            .line {
               fill: none;
               stroke: #000;
               stroke-width: 1.5px;
-            }
+            }*/
         </style>
     </head>
+    <script src="./Path Transitions_files/d3.v3.min.js" charset="utf-8"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-ease@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-selection@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-timer@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-drag@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-transition@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-brush@3"></script> -->
+    
     <script type="text/javascript">
         var recordList = [];
         var rls = {"x": [], "y": [], "z": [], "ts": []};
         var ax = 0; var ay = 0; var az = 0;
+        var recording = false;
     </script>
-    <script src="./Path Transitions_files/d3.v3.min.js" charset="utf-8"></script>
     <body id="body" style="background-color: rgb(208, 255, 208);" class="vsc-initialized">
         <h1>Web Bluetooth micro:bit Accelerometer</h1>
 

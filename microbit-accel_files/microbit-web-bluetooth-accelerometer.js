@@ -154,12 +154,14 @@ function accelerometerDataChanged(event) {
     document.getElementById("accelerometerY").innerHTML = round10(y)// Little Endian
     document.getElementById("accelerometerZ").innerHTML = round10(z); // Little Endian
     if (recording == true) {
+        // console.log("accel recording true");
         recordList.push([x, y, z, new Date()]);
-        rls["x"].push(x); rls["y"].push(y); rls["z"].push(z); rls["times"].push(new Date());
+        // console.log(rls);
+        rls["x"].push(x); rls["y"].push(y); rls["z"].push(z); rls["ts"].push(new Date());
     }
 }
 
-var recording = false;
+
 
 function setRecord(val) { recording = val; }
 // function stopRecord() { recording = false; }

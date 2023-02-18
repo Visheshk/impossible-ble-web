@@ -1,0 +1,40 @@
+    body {
+/*      background: #000;*/
+      margin: 0;
+      padding: 0;
+      font: 10px sans-serif;
+    }
+
+    text {
+/*      fill: #fff;*/
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #333;
+      shape-rendering: crispEdges;
+    }
+
+    .axis path {
+      stroke: #777;
+    }
+
+    .line {
+      fill: none;
+/*      stroke: #fff;*/
+      stroke-width: 2px;
+    }
+
+    .data {
+      stroke: #f0f;
+/*      stroke-width: 1px;*/
+    }
+
+    .average-50 {
+      stroke: #00f;
+    }
+
+    .average-25 {
+      stroke: #f00;
+    }
