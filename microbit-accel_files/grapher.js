@@ -1,7 +1,7 @@
 
 let h = window.innerHeight*0.7;
 let w = window.innerWidth*0.7;
-
+console.log(h, w);
 let time = 0;
 let num = 300;
 
@@ -17,38 +17,39 @@ let latestAverages_50 = [0];
 let latestAverages_25 = [0];
 let latestDeltas = [seed];
 
-let x = d3.scale.linear().range([0, w - 40]);
-let y = d3.scale.linear().range([h - 40, 0]);
+let x = d3.scaleLinear().range([0, 100]);
+let y = d3.scaleLinear().domain(-1000, 1000).range([0,100]);
 
 let svg = d3.select('body').append('svg')
-  .attr({width: w, height: h})
   .append('g')
+  .attr("width", "100%").attr("height", "100%")
   .attr('transform', 'translate(30, 20)');
 
 
-let xAxis = d3.svg.axis()
-  .scale(x)
-  .orient('bottom')
-  .innerTickSize(-h + 40)
-  .outerTickSize(0)
+let xAxis = d3.axisBottom(x)
+  // .orient('bottom')
+  .tickSizeInner(-h + 40)
+  .tickSizeOuter(0)
   .tickPadding(10);
 
-let yAxis = d3.svg.axis()
-  .scale(y)
-  .orient('left')
-  .innerTickSize(-w + 40)
-  .outerTickSize(0)
+let yAxis = d3.axisLeft(y)
+  // .orient('left')
+  .tickSizeInner(-w + 40)
+  .tickSizeOuter(0)
   .tickPadding(10);
 
-let line = d3.svg.line()
+let line = d3.line()
   .x((d, i) => x(i))
   .y(d => y(d));
 
+margin = ({top: 20, right: 20, bottom: 30, left: 40});
+focusHeight = 100;
+height = 440;
 
-// const brush = d3.brushX()
-//       .extent([[margin.left, 0.5], [width - margin.right, focusHeight - margin.bottom + 0.5]])
-//       .on("brush", brushed)
-//       .on("end", brushended);
+const brush = d3.brushX()
+      .extent([[margin.left, 0.5], [w - margin.right, focusHeight - margin.bottom + 0.5]])
+      .on("brush", brushed)
+      .on("end", brushended);
 
 
 let $xAxis = svg.append('g')
@@ -69,13 +70,16 @@ let $averages_50 = svg.append('path')
 let $averages_25 = svg.append('path')
   .attr('class', 'line average-25');
 
-// const gb = svg.append("g")
-//     .call(brush)
-//     .call(brush.move, defaultSelection);
+const defaultSelection = [50, 80];
+console.log(defaultSelection);
+
+const gb = svg.append("g")
+    .call(brush)
+    .call(brush.move, defaultSelection);
 
 function brushed({selection}) {
   if (selection) {
-    svg.property("value", selection.map(x.invert, x).map(d3.utcDay.round));
+    svg.property("value", selection.map(x.invert, x));
     svg.dispatch("input");
   }
 }
