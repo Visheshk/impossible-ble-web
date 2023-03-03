@@ -16,7 +16,7 @@ var tableFormat = true;
  * Object containing the Bluetooth UUIDs of all the services and
  * characteristics of the micro:bit.
  */
-gameballUuid = {
+var gameballUuid = {
     /**
      * Services
      */
@@ -76,42 +76,6 @@ gameballUuid = {
         }
     },
 }
-
-
-async function start() {
-  // 2. Initialize the JavaScript client library.
-  console.log("trying to read file");
-  keysRes = await fetch('keys')
-  kr = JSON.parse(await keysRes.text());
-  console.log(kr);
-
-  gapi.client.init({
-    'apiKey': kr.apiKey,
-    // 'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
-    // clientId and scope are optional if auth is not required.
-    'clientId': kr.clientId,
-    'scope': 'profile',
-  }).then(function() {
-    // 3. Initialize and make the API request.
-    // return gapi.client.people.people.get({
-    //   'resourceName': 'people/me',
-    //   'requestMask.includeField': 'person.names'
-    // });
-    return gapi.client.request({
-        path: "https://script.googleapis.com/v1/scripts/AKfycbwOcXO3lbZiYAXZGaS0U-unR6-RGXEIU68SvTinYufVMGP537Lyr6DC070iFqilyeJi:run",
-        method: "POST"
-    });
-  }).then(function(response) {
-    console.log(response);
-  }, function(reason) {
-    // console.log('Error: ' + reason.result.error.message);
-    console.log(reason);
-  });
-};
-// 1. Load the JavaScript client library.
-gapi.load('client', start);
-
-// 
 
 
 
@@ -445,11 +409,35 @@ function tagData(tagVal) {
     lastTagRow = printData.length;
 }
 
+
+function accelerometerDataChanged(vals) {
+    // var x = event.target.value.getInt16(0, true);
+    // var y = event.target.value.getInt16(2, true);
+    // var z = event.target.value.getInt16(4, true);
+    var x = vals[0];
+    var y = vals[1];
+    var z = vals[2];
+    ax = x;
+    ay = y;
+    az = z;
+    document.getElementById("accelerometerX").innerHTML = round10(x); // Little Endian
+    document.getElementById("accelerometerY").innerHTML = round10(y)// Little Endian
+    document.getElementById("accelerometerZ").innerHTML = round10(z); // Little Endian
+    if (recording == true) {
+        // console.log("accel recording true");
+        recordList.push([x, y, z, new Date()]);
+        // console.log(rls);
+        rls["x"].push(x); rls["y"].push(y); rls["z"].push(z); rls["ts"].push(new Date());
+    }
+}
+
+
 function handleDataChange(event) {
   tb = event.target.value.buffer;
   // console.log(tb);
   tba = new Uint16Array(tb);
   console.log(tba);
+  accelerometerDataChanged([tba[2], tba[3], tba[4]]);
   pushObj = {}
   tba.map((c, index) => pushObj["a" + String(index)] = c);
   pushObj["time"] = new Date().getTime();
@@ -462,13 +450,13 @@ function exportData() {
     document.body.appendChild(a);
     a.style = "display: none";
     csvRows = ["time, a1x, a1y,a1z,a2x, a2y, a2z, tag"];
-    for p in printData{
-        row = printData[p].time + ", "
-        for d in range
-        printData[p].data[0]
+    // for p in printData {
+    //     row = printData[p].time + ", "
+    //     for d in range
+    //     printData[p].data[0]
 
-        csv
-    }
+    //     csv
+    // }
         
     console.log(printData);
     var json = JSON.stringify(printData),
