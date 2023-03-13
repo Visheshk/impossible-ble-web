@@ -1,0 +1,57 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.dropzone {
+  background-color: #bfe4ff;
+  border: dashed 4px transparent;
+  border-radius: 4px;
+  display: inline-block;
+  position: fixed;
+  z-index: -1;
+  margin: 10px auto 30px; 
+  padding: 10px;
+  padding-right: 150px;
+/*  margin-right: 100px;*/
+/*   width: 80%; */
+  transition: background-color 0.3s;
+}
+
+.drop-active {
+  border-color: #aaa;
+}
+
+.drop-target {
+  background-color: #29e;
+  border-color: #fff;
+  border-style: solid;
+}
+
+.drag-drop {
+  display: inline-block;
+  min-width: 40px;
+  padding: 0.5em;
+  position: fixed;
+  transform: translate(0px, 0px);
+/*   margin: 1rem 0 0 1rem; */
+
+  color: #fff;
+  background-color: #29e;
+  border: solid 2px #fff;
+
+  touch-action: none;
+/*  transform: translate(0px, 0px);*/
+
+  transition: background-color 0.3s;
+}
+
+.drag-drop.can-drop {
+  color: #000;
+  background-color: #4e4;
+}
+
+.no-drop {
+  background-color: #29e;
+}
