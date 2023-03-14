@@ -1,3 +1,6 @@
+/// different shapes UI
+/// add values manually
+
 blocks = [
 	"average speed", 
 	"max speed", 
@@ -32,6 +35,10 @@ function makeSlots() {
 		dv.setAttribute('class', 'dropzone')
 		dv.setAttribute('id', 'receiver-' + r);
 		dv.textContent = receivers[r];
+		numInput = document.createElement("input");
+		numInput.setAttribute("type", "number");
+		numInput.setAttribute("class", "number-input");
+		dv.appendChild(numInput);
 		document.body.insertBefore(dv, document.getElementById("receivers"));
 		moveTarget(receiversX, ry, dv);
 		ry += dv.getBoundingClientRect().height + 10;
@@ -77,6 +84,7 @@ function getBlockIndex (block) {
 
 function attachBlocks (parent, block) {
 	//remember parent to block connections
+	disconnectBlock(block, false);
 	var dgrc = parent.getBoundingClientRect();
 	moveTarget(dgrc.left+90, dgrc.top + 5, block);
 	var blockIndex = getBlockIndex(block);
@@ -90,7 +98,7 @@ function attachBlocks (parent, block) {
 	//change 
 }
 
-function disconnectBlock(block) {
+function disconnectBlock(block, moveBool=true) {
 	// console.log(block);
 	parentIndex = connections.indexOf(getBlockIndex(block));
 	console.log(connections);
@@ -100,5 +108,5 @@ function disconnectBlock(block) {
 		dataValues[parentIndex] = originalBallPossess[parentIndex];
 		ballPossess[parentIndex] = originalBallPossess[parentIndex];
 	}
-	sendBlockHome(block);
+	if (moveBool) {sendBlockHome(block)};
 }

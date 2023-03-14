@@ -16,17 +16,23 @@
     <div  class="drag-drop"> drop 2 </div>
     <div  class="drag-drop"> drop 5 </div>
     <div  class="drag-drop"> drop 8 </div> -->
+    <button onclick="connectDevice()">Connect</button>
+    <button onclick="makeDrawing()">Make drawing</button>
     <div id = "receivers">
     </div>
-    <div class="dropzone"> tester </div>
+    
     <main>
     </main>
+    <div class="dropzone"> tester <input type="number" class="number-input"/> </div>
     <script type="text/javascript">
       //These would be replaced by data
       var originalBallTimes = [0,70,32,70,120,40,32,155];
       var ballTimes = [0,70,32,70,120,40,32,155];
       var originalBallPossess = [0,60,46,30,40,18,16,25];
       var ballPossess = [0,60,46,30,40,18,16,25];
+      var accelData = [];
+      var recordList;
+      var rls;
 
       function moveTarget(x, y, t) {
         t.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
@@ -36,6 +42,7 @@
         t.setAttribute('data-y', y)
       }
     </script>
+    <script src="bluetooth-connector.js"> </script>
     <script src="blockMaker.js"> </script>
     <script src="dragger.js"> </script>
 

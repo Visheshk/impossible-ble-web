@@ -44,7 +44,6 @@ interact('.dropzone').dropzone({
     // remove the drop feedback style
     event.target.classList.remove('drop-target');
     event.relatedTarget.classList.remove('can-drop');
-    // event.relatedTarget.classList.add('no-drop');
     // event.relatedTarget.textContent = 'Dragged out';
     
   },
