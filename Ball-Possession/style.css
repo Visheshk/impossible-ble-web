@@ -3,11 +3,13 @@ html, body {
   margin: 0;
   padding: 0;
   scroll-behavior: auto;
+  width: 100%;
 }
 
 main {
   z-index: -2;
 }
+
 
 .dropzone {
   background-color: #bfe4ff;
@@ -23,13 +25,13 @@ main {
 /*  padding-right: 50px;*/
 /*  align-items: top;*/
 /*  margin-right: 100px;*/
-   width: 130px; 
+   width: 170px; 
   transition: background-color 0.3s;
 }
 
 .number-input {
   display: inline;
-  width: 30px;
+  width: 70px;
   margin-right: 10px;
   margin-left: 10px;
 }
