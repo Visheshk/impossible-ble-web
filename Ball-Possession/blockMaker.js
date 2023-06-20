@@ -1,30 +1,24 @@
 /// different shapes UI
 /// add values manually
 
-blocks = [
-	"average speed", 
-	"max speed", 
-	"time of possession", 
-	"running time", 
-	"rest time"
-];
-blockVals = [5, 230, 31, 543, 234, 12, 30];
+
+
 inputVals = [5, 230, 31, 543, 234, 12, 30];
 
 blocksStartX = 550;
 blocksStartY = 10;
 
 receivers = [
-	"number", 
-	"angle", 
-	"color", 
-	"stroke", 
-	"distance", 
-	"radius"
+	"Number", 
+	"Angle", 
+	"Color", 
+	"Stroke", 
+	"Distance", 
+	"Radius"
 ];
 
 receiversX = 550;
-receiversY = 50;
+receiversY = 70;
 
 connections = [];
 dataValues = ballPossess;
@@ -120,7 +114,7 @@ function getBlockIndex (block) {
 
 function attachBlocks (parent, block) {
 	//remember parent to block connections
-	console.log(parent, block);
+	// console.log(parent, block);
 	disconnectBlock(block, false);
 	var dgrc = parent.getBoundingClientRect();
 	moveTarget(dgrc.left+70, dgrc.top + 5, block);
@@ -131,6 +125,7 @@ function attachBlocks (parent, block) {
 	}
 	connections[parentIndex] = blockIndex;
 	ballPossess[parentIndex] = blockVals[blockIndex];
+	console.log(ballPossess);
 	// console.log("bp " + ballPossess);
 	// if connections
 	//change 
@@ -151,4 +146,4 @@ function disconnectBlock(block, moveBool=true) {
 	if (moveBool) {sendBlockHome(block)};
 }
 
-// attachBlocks(document.getElementById("receiver-0"), document.getElementById("block-0"));
+attachBlocks(document.getElementById("receiver-0"), document.getElementById("block-0"));

@@ -127,7 +127,7 @@ function clearLog() {
  * Function that turns the background color red.
  */
 function onDisconnected() {
-    document.getElementById("body").style = "background-color:#FFD0D0";
+    // document.getElementById("body").style = "background-color:#FFD0D0";
 }
 
 
@@ -155,6 +155,22 @@ function accelerometerDataChanged(event) {
     document.getElementById("accelerometerX").innerHTML = round10(x); // Little Endian
     document.getElementById("accelerometerY").innerHTML = round10(y)// Little Endian
     document.getElementById("accelerometerZ").innerHTML = round10(z); // Little Endian
+    var accelS = (x**2 + y**2 + z**2)**0.5;
+    timeNow = new Date().getTime();
+    if (accelS > 1600 & ((timeNow - calculatedData["lastStepThresholdTime"]) > 700)) {
+        calculatedData["steps"] += 1;
+        calculatedData["lastStepThresholdTime"] = timeNow;
+        calculatedData["lastRunTime"] = timeNow;
+        blockVals[blocks.indexOf("Steps")] = calculatedData["steps"];
+    }
+
+    if (accelS > 1800 & ((timeNow - calculatedData["lastRunTime"]) < 1200)) {
+        calculatedData["runTime"] += timeNow - calculatedData["lastRunTime"];
+        calculatedData["lastRunTime"] = timeNow;
+        blockVals[blocks.indexOf("Running Time")] = calculatedData["runTime"];
+    }
+    
+    document.getElementById("extras").innerHTML = round10(accelS) + " " + JSON.stringify(calculatedData); // Little Endian
     if (recording == true) {
         // console.log("accel recording true");
         // console.log(rls);
@@ -184,7 +200,7 @@ function readAccelerometerPeriod() {
             } else {
                 accelerometerPeriodCharacteristic.readValue()
                 .then(value => {
-                    document.getElementById("accelerometerPeriodText").value = value.getUint16(0, true); // Little Endian
+                    // document.getElementById("accelerometerPeriodText").value = value.getUint16(0, true); // Little Endian
                     addLog("<font color='green'>OK</font>", true);
                 })
                 .catch(error => {
@@ -246,7 +262,7 @@ function connectDevice() {
             bluetoothDevice = device;
             addLog("Connecting to GATT server (name: <font color='blue'>" + device.name + "</font>, ID: <font color='blue'>" + device.id + "</font>)... ", false);
             device.addEventListener('gattserverdisconnected', onDisconnected);
-            document.getElementById("body").style = "background-color:#D0FFD0";
+            // document.getElementById("body").style = "background-color:#D0FFD0";
             return device.gatt.connect();
         })
         .then(server => {

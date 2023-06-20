@@ -18,8 +18,7 @@
     <div  class="drag-drop"> drop 2 </div>
     <div  class="drag-drop"> drop 5 </div>
     <div  class="drag-drop"> drop 8 </div> -->
-    <!-- <button onclick="connectDevice()">Connect</button> -->
-    <!-- <button onclick="makeDrawing()">Make drawing</button> -->
+    
     <div id = "receivers">
     </div>
     
@@ -28,12 +27,27 @@
     <!-- <div class="dropzone"> <div class="receiverText">tester</div> <div class="number-input-div"><input type="number" class="number-input"/> </div></div> -->
     <script type="text/javascript">
       //These would be replaced by data
+      var blocks = ["Steps", "Average Speed", "Max Speed", // "Time of Possession", 
+	              "Running Time", "Rest Time"];
+      var blockVals = [5, 230, 31, 543, 234, 12, 30];
+      var calculatedData = {
+        "steps": 5, 
+        "max speed": 230, 
+        "possession": 31, 
+        "running time": 543, 
+        "rest time": 234, 
+        "t5": 12, 
+        "t6": 30
+      };
       var originalBallTimes = [0,70,32,70,120,40,32,155];
       var ballTimes = [0,70,32,70,120,40,32,155];
       var originalBallPossess = [0,60,46,30,40,18,16,25];
+      
       var ballPossess = [0,60,46,30,40,18,16,25];
       var accelData = [];
+      var calculatedData = {"steps": 0, "lastRunTime": 0, "lastStepThresholdTime": 0, "runTime": 0};
       var recordList;
+      var recording;
       var rls;
 
       function moveTarget(x, y, t) {
@@ -45,6 +59,33 @@
         t.setAttribute('data-y', y)
       }
     </script>
+    <div class="container">
+      <div class="col">
+        <button onclick="connectDevice()">Connect</button>
+        <button onclick="makeDrawing()">Make drawing</button>
+        <table>
+          <tbody><tr>
+              <td>x:</td>
+              <td id="accelerometerX">-</td>
+          </tr>
+          <tr>
+              <td>y:</td>
+              <td id="accelerometerY">-</td>
+          </tr>
+          <tr>
+              <td>z:</td>
+              <td id="accelerometerZ">-</td>
+          </tr>
+          <tr>
+            <td>extras:</td>
+            <td id="extras">-</td>
+        </tr>
+        </tbody></table>
+      </div>
+      
+    </div>
+    
+
     <script src="bluetooth-connector.js"> </script>
     <script src="blockMaker.js"> </script>
     <script src="dragger.js"> </script>
