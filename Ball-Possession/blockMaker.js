@@ -79,7 +79,7 @@ async function makeSlots() {
 	
 	
 }
-makeSlots();
+
 
 function makeBlocks() {
 	blocksX = blocksStartX;
@@ -92,13 +92,17 @@ function makeBlocks() {
 		dv.setAttribute('id', 'block-'+ b);
 		dv.setAttribute('start-x', blocksX);
 		dv.setAttribute('start-y', blocksY);
+		console.log(blocksX, blocksY);
 		document.body.prepend(dv);
 		moveTarget(blocksX, 10, document.getElementById('block-'+ b));
 		blocksX = dv.getBoundingClientRect().right + 10;
 		//TODO: connect block to data field
 	}
 }
+
 makeBlocks();
+
+makeSlots();
 
 function sendBlockHome (t) {
 	// console.log(t);
@@ -116,6 +120,7 @@ function getBlockIndex (block) {
 
 function attachBlocks (parent, block) {
 	//remember parent to block connections
+	console.log(parent, block);
 	disconnectBlock(block, false);
 	var dgrc = parent.getBoundingClientRect();
 	moveTarget(dgrc.left+70, dgrc.top + 5, block);
@@ -145,3 +150,5 @@ function disconnectBlock(block, moveBool=true) {
 
 	if (moveBool) {sendBlockHome(block)};
 }
+
+// attachBlocks(document.getElementById("receiver-0"), document.getElementById("block-0"));
