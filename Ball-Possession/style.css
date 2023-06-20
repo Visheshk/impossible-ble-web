@@ -2,7 +2,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  scroll-behavior: auto;
+ /* min-width: 1500px;
+  scroll-behavior: horizontal;*/
 }
 
 main {
@@ -18,7 +19,7 @@ main {
   justify-content: space-between;
   position: fixed;
   z-index: 1;
-  margin: 10px auto 30px; 
+/*  margin: 10px auto 30px; */
   padding: 10px;
 /*  padding-right: 50px;*/
 /*  align-items: top;*/
@@ -29,7 +30,7 @@ main {
 
 .number-input {
   display: inline;
-  width: 30px;
+  width: 50px;
   margin-right: 10px;
   margin-left: 10px;
 }
@@ -50,7 +51,7 @@ main {
 }
 
 .drag-drop {
-  display: inline-grid;
+/*  display: inline-block;*/
   min-width: 40px;
   padding: 0.5em;
   position: fixed;

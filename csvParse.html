@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Read CSV file with JS</title>
+</head>
+
+<body>
+    <input type='file' id="UploadFile" accept=".csv">
+
+    <button id="uploadsuccess">file uploaded</button>
+
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <script>
+        const csvData=[];
+        var arrData = {
+            "xs": [], 
+            "ys": [], 
+            "zs": [], 
+            "time": []
+        };
+        var train1 = {
+            "xs": [], 
+            "ys": [], 
+            "zs": [], 
+            "time": []
+        };
+        var trains = {
+            train1: {
+                "xList": [],
+                "yList": [],
+                "zList": []
+            },
+            train2: {
+                "xList": [],
+                "yList": [],
+                "zList": []
+            }
+            train3: {
+                "xList": [],
+                "yList": [],
+                "zList": []
+            }
+        }
+        
+        const uploadsuccess=document.getElementById("uploadsuccess").
+            addEventListener("click", () => {
+                Papa.parse(document.getElementById('UploadFile').files[0], {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (answer) {
+                        console.log("hi");
+                        
+                        for (i=0; i<answer.data.length; i++) {
+                            var ad = answer.data[i];
+                            csvData.push(ad);
+                            arrData["time"].push(parseInt(ad["Time (seconds)"]));
+                            arrData["xs"].push(parseInt(ad["x"]));
+                            arrData["ys"].push(parseInt(ad["y"]));
+                            arrData["zs"].push(parseInt(ad["z"]));
+                            // console.log(answer.data[i]);
+                        }
+
+                        console.log(arrData);
+                    }
+                });
+            });
+        // add timestamp boundaries for train 1, train 2 and train3
+        var timeBounds = {
+            t1: {
+                "start": 0, 
+                "end": 0
+            }, t2: {
+                "start": 0, 
+                "end": 0
+            }, t3: {
+                "start": 0, 
+                "end": 0
+            }
+        };
+
+        // given train1 time bounds, move arrData fields for those time bounds into train1; same for train2 and train3
+
+        // take 1 test gesture's x, y and z list. Calculate dtw distance of test-x from train1-x, test-y to train1-y, test-z to train1-z. 
+        //def dtw(test1, train1):
+            //dtw(test1.xList, train1.xList)
+            //dtw(test1.yList, train1.yList)
+            //dtw(test1.zList, train1.zList)
+
+
+    </script>
+</body>
+
+</html>

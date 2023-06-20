@@ -42,8 +42,9 @@ async function makeSlots() {
 			numInput.setAttribute("class", "number-input");
 			numInput.setAttribute("value", blockVals[r]);
 			numInput.setAttribute("id", "receiver-input-" + r);
+			console.log(r);
 			dv.appendChild(numInput);
-			await document.body.insertBefore(dv, document.getElementById("receivers"));
+			document.body.insertBefore(dv, document.getElementById("receivers"));
 			moveTarget(receiversX, ry, dv);
 			ry += dv.getBoundingClientRect().height + 10;
 			connections.push(-1);
@@ -117,7 +118,7 @@ function attachBlocks (parent, block) {
 	//remember parent to block connections
 	disconnectBlock(block, false);
 	var dgrc = parent.getBoundingClientRect();
-	moveTarget(dgrc.left+90, dgrc.top + 5, block);
+	moveTarget(dgrc.left+70, dgrc.top + 5, block);
 	var blockIndex = getBlockIndex(block);
 	var parentIndex = getBlockIndex(parent);
 	if (connections[parentIndex] != -1) {

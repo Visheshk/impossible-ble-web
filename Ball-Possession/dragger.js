@@ -11,6 +11,7 @@ function dragMoveListener (event) {
 }
 
 function dragEndListener (event) { 
+  // console.log(event.target.classList)
   if (!event.target.classList.contains('can-drop')) {
     disconnectBlock(event.target);
     // sendBlockHome(event.target);
