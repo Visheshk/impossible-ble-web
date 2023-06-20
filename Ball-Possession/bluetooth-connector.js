@@ -157,6 +157,15 @@ function accelerometerDataChanged(event) {
     document.getElementById("accelerometerZ").innerHTML = round10(z); // Little Endian
     var accelS = (x**2 + y**2 + z**2)**0.5;
     timeNow = new Date().getTime();
+
+    // last accelerometer value
+    av = calculatedData["lastAccel"];
+    console.log(calculatedData["velocity"], calculatedData["speed"]);
+    xVel = calculatedData["velocity"].x + (av["x"] + x)*0.5*(timeNow - av["time"]);
+    yVel = calculatedData["velocity"].y + (av["y"] + x)*0.5*(timeNow - av["time"]);
+    zVel = calculatedData["velocity"].z + (av["z"] + x)*0.5*(timeNow - av["time"]);
+    calculatedData["speed"] = (xVel**2 + yVel**2 + zVel**2)**0.5;
+
     if (accelS > 1600 & ((timeNow - calculatedData["lastStepThresholdTime"]) > 700)) {
         calculatedData["steps"] += 1;
         calculatedData["lastStepThresholdTime"] = timeNow;
@@ -170,13 +179,20 @@ function accelerometerDataChanged(event) {
         blockVals[blocks.indexOf("Running Time")] = calculatedData["runTime"];
     }
     
-    document.getElementById("extras").innerHTML = round10(accelS) + " " + JSON.stringify(calculatedData); // Little Endian
+    document.getElementById("extras").innerHTML = JSON.stringify(
+        [
+            calculatedData["steps"], 
+            calculatedData["runTime"], 
+            calculatedData["speed"], 
+            calculatedData["velocity"]]); // Little Endian
     if (recording == true) {
         // console.log("accel recording true");
         // console.log(rls);
         recordList.push([x, y, z, new Date()]);
         rls["x"].push(x); rls["y"].push(y); rls["z"].push(z); rls["ts"].push(new Date());
     }
+    calculatedData["velocity"] = {"x": xVel, "y": yVel, "z": zVel};
+    calculatedData["lastAccel"] = {"x": x, "y": y, "z": z, "time": timeNow};
 }
 
 

@@ -34,18 +34,9 @@
         "steps": 5, 
         "max speed": 230, 
         "possession": 31, 
-        "running time": 543, 
-        "rest time": 234, 
-        "t5": 12, 
-        "t6": 30
+        "running time": 543
       };
-      var originalBallTimes = [0,70,32,70,120,40,32,155];
-      var ballTimes = [0,70,32,70,120,40,32,155];
-      var originalBallPossess = [0,60,46,30,40,18,16,25];
       
-      var ballPossess = [0,60,46,30,40,18,16,25];
-      var accelData = [];
-      var calculatedData = {"steps": 0, "lastRunTime": 0, "lastStepThresholdTime": 0, "runTime": 0};
       var recordList;
       var recording;
       var rls;
@@ -58,11 +49,51 @@
         t.setAttribute('data-x', x)
         t.setAttribute('data-y', y)
       }
+
+      var originalBallTimes = [0,70,32,70,120,40,32,155];
+      var ballTimes = [0,70,32,70,120,40,32,155];
+      var originalBallPossess = [0,60,46,30,40,18,16,25];
+      
+      var ballPossess = [0,60,46,30,40,18,16,25];
+      var accelData = [];
+      var calculatedData = {
+        "steps": 0, 
+        "lastRunTime": 0, 
+        "lastStepThresholdTime": 0, 
+        "runTime": 0,
+        "velocity": {"x": 0, "y": 0, "z": 0},
+        "rest time": 234, 
+        "t5": 12, 
+        "t6": 30,
+        "lastAccel": {"x": 0, "y": 0, "z": 0, "time": 0}
+      };
+
+      function resetValues () {
+         originalBallTimes = [0,70,32,70,120,40,32,155];
+         ballTimes = [0,70,32,70,120,40,32,155];
+         originalBallPossess = [0,60,46,30,40,18,16,25];
+        
+         ballPossess = [0,60,46,30,40,18,16,25];
+         accelData = [];
+         calculatedData = {
+          "steps": 0, 
+          "lastRunTime": 0, 
+          "lastStepThresholdTime": 0, 
+          "runTime": 0,
+          "velocity": {"x": 0, "y": 0, "z": 0},
+          "rest time": 234, 
+          "t5": 12, 
+          "t6": 30,
+          "lastAccel": {"x": 0, "y": 0, "z": 0, "time": 0}
+        };
+      }
+      resetValues();
     </script>
     <div class="container">
       <div class="col">
         <button onclick="connectDevice()">Connect</button>
         <button onclick="makeDrawing()">Make drawing</button>
+        <button onclick="resetValues()">reset data</button>
         <table>
           <tbody><tr>
               <td>x:</td>
