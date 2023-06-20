@@ -17,11 +17,11 @@ main {
   border: dashed 4px transparent;
   border-radius: 4px;
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
   justify-content: space-between;
-  position: fixed;
-  z-index: 1;
-/*  margin: 10px auto 30px; */
+  /* position: fixed; */
+  /* z-index: 1; */
+  margin: 10px;
   padding: 10px;
 /*  padding-right: 50px;*/
 /*  align-items: top;*/
@@ -56,9 +56,9 @@ main {
 /*  display: inline-block;*/
   min-width: 40px;
   padding: 0.5em;
-  position: fixed;
-  z-index: 3;
-  transform: translate(0px, 0px);
+  /* position: fixed; */
+  /* z-index: 3; */
+  /* transform: translate(0px, 0px); */
 /*   margin: 1rem 0 0 1rem; */
 
   color: #fff;

@@ -32,6 +32,7 @@ dataValues = ballPossess;
 async function makeSlots() {
 	async function addReceivers() {
 		var ry = receiversY;
+		recCol = document.getElementById("receivers-col");
 		for (var r in receivers) {
 			dv = document.createElement("div");
 			dv.setAttribute('class', 'dropzone')
@@ -42,10 +43,10 @@ async function makeSlots() {
 			numInput.setAttribute("class", "number-input");
 			numInput.setAttribute("value", blockVals[r]);
 			numInput.setAttribute("id", "receiver-input-" + r);
-			console.log(r);
+			// console.log(r);
 			dv.appendChild(numInput);
-			document.body.insertBefore(dv, document.getElementById("receivers"));
-			moveTarget(receiversX, ry, dv);
+			recCol.insertBefore(dv, document.getElementById("receivers"));
+			// moveTarget(receiversX, ry, dv);
 			ry += dv.getBoundingClientRect().height + 10;
 			connections.push(-1);
 			// dataValues.push(-1);
@@ -58,7 +59,7 @@ async function makeSlots() {
 		// console.log(numInputElements);
 		numInputElements.forEach( (nie) => {
 			nie.addEventListener("change", (event) => {
-				// console.log(event.target.value);
+				console.log(event.target.value);
 				var nid = event.target.getAttribute("id");
 				var inputId = parseInt(nid.slice(nid.length - 1, nid.length));
 				inputVals[inputId] = parseInt(event.target.value);
@@ -90,12 +91,15 @@ function makeBlocks() {
 		dv.setAttribute('class', 'drag-drop');
 		dv.textContent = blocks[b];
 		dv.setAttribute('id', 'block-'+ b);
-		dv.setAttribute('start-x', blocksX);
-		dv.setAttribute('start-y', blocksY);
+		
 		console.log(blocksX, blocksY);
-		document.body.prepend(dv);
-		moveTarget(blocksX, 10, document.getElementById('block-'+ b));
-		blocksX = dv.getBoundingClientRect().right + 10;
+		document.getElementById("measuredVals").appendChild(dv);
+		// document.body.prepend(dv);
+		// moveTarget(blocksX, 10, document.getElementById('block-'+ b));
+		blocksX = dv.getBoundingClientRect().left;
+		blocksY = dv.getBoundingClientRect().top;
+		dv.setAttribute('start-x', 0);
+		dv.setAttribute('start-y', 0);
 		//TODO: connect block to data field
 	}
 }
@@ -105,7 +109,7 @@ makeBlocks();
 makeSlots();
 
 function sendBlockHome (t) {
-	// console.log(t);
+	console.log("sending block home", t);
   var x = t.getAttribute("start-x");
   var y = t.getAttribute("start-y");
   t.classList.remove('can-drop');

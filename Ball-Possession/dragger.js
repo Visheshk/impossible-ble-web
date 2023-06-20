@@ -11,7 +11,7 @@ function dragMoveListener (event) {
 }
 
 function dragEndListener (event) { 
-  // console.log(event.target.classList)
+  console.log(event.target.classList, event.target);
   if (!event.target.classList.contains('can-drop')) {
     disconnectBlock(event.target);
     // sendBlockHome(event.target);
@@ -39,10 +39,12 @@ interact('.dropzone').dropzone({
     // feedback the possibility of a drop
     dropzoneElement.classList.add('drop-target');
     draggableElement.classList.add('can-drop');
+    console.log("on drag enter");
     // draggableElement.textContent = 'Dragged in';
   },
   ondragleave: function (event) {
     // remove the drop feedback style
+    console.log("drag leave:");
     event.target.classList.remove('drop-target');
     event.relatedTarget.classList.remove('can-drop');
     // event.relatedTarget.textContent = 'Dragged out';
@@ -51,6 +53,7 @@ interact('.dropzone').dropzone({
   ondrop: function (event) {
     rt = event.relatedTarget;
     // rt.textContent = 'Dropped';
+    console.log("dropping");
     dg = event.target;
     attachBlocks(dg, rt);
     
