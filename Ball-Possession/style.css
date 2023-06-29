@@ -7,6 +7,10 @@ html, body {
 
 }
 
+table {
+  color: white;
+}
+
 main {
   z-index: -2;
 }

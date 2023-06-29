@@ -20,7 +20,6 @@ receivers = [
 receiversX = 550;
 receiversY = 70;
 
-connections = [];
 dataValues = ballPossess;
 
 async function makeSlots() {
@@ -106,6 +105,7 @@ function sendBlockHome (t) {
   moveTarget(x, y, t);
 }
 
+///****** TODO: assuming less than 10 blocks here ******//
 function getBlockIndex (block) {
 	var bid = block.getAttribute('id');
 	var blockIndex = parseInt(bid.slice(bid.length - 1, bid.length));
@@ -125,7 +125,8 @@ function attachBlocks (parent, block) {
 	}
 	connections[parentIndex] = blockIndex;
 	ballPossess[parentIndex] = blockVals[blockIndex];
-	console.log(ballPossess);
+	console.log(connections);
+	// console.log(ballPossess);
 	// console.log("bp " + ballPossess);
 	// if connections
 	//change 

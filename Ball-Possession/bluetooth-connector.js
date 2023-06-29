@@ -170,21 +170,24 @@ function accelerometerDataChanged(event) {
         calculatedData["steps"] += 1;
         calculatedData["lastStepThresholdTime"] = timeNow;
         calculatedData["lastRunTime"] = timeNow;
-        blockVals[blocks.indexOf("Steps")] = calculatedData["steps"];
+        blockVals[blocks.indexOf("Steps")] = calculatedData["steps"] *3;
+        // ballPossess[blocks.indexOf("Steps")] = calculatedData["steps"] *3;
     }
 
     if (accelS > 1800 & ((timeNow - calculatedData["lastRunTime"]) < 1200)) {
         calculatedData["runTime"] += timeNow - calculatedData["lastRunTime"];
         calculatedData["lastRunTime"] = timeNow;
-        blockVals[blocks.indexOf("Running Time")] = calculatedData["runTime"];
+        blockVals[blocks.indexOf("Running Time")] = calculatedData["runTime"]/500.0;
+        // ballPossess[blocks.indexOf("Running Time")] = calculatedData["runTime"]/500.0;
     }
     
     document.getElementById("extras").innerHTML = JSON.stringify(
         [
             calculatedData["steps"], 
             calculatedData["runTime"], 
-            calculatedData["speed"], 
-            calculatedData["velocity"]]); // Little Endian
+            // calculatedData["speed"], 
+            // calculatedData["velocity"]]); // Little Endian
+        ])
     if (recording == true) {
         // console.log("accel recording true");
         // console.log(rls);

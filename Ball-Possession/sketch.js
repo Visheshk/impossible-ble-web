@@ -21,12 +21,18 @@ function draw() {
     if (slider <= 60) {
       slider += 1;
     }
+    for (var c in connections) {
+      if (connections[c] > -1) {
+        ballPossess[c] = blockVals[connections[c]]
+      }
+    }
+    
 
-    ballPossess[1] = slider;
-    ballPossess[3] = slider/2;
-    ballPossess[4] = slider-20;
-    ballPossess[5] = slider/3;
-    ballPossess[6] = slider/2;
+    // ballPossess[1] = slider;
+    // ballPossess[3] = slider/2;
+    // ballPossess[4] = slider-20;
+    // ballPossess[5] = slider/3;
+    // ballPossess[6] = slider/2;
 
     // ballPossess[1] = slider.value();
     // ballPossess[3] = slider.value()/2;
@@ -69,7 +75,7 @@ function draw() {
     
     // player 7
     fill(13, 146, 185, 110);
-    polarEllipses(14, ballPossess[7], ballPossess[7], ballTimes[7]);
+    polarEllipses(14, ballPossess[0], ballPossess[0], ballTimes[0]);
     
     // polarHexagon( angle, radius, [distance] ) 
     noStroke();

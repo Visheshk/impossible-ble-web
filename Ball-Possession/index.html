@@ -40,6 +40,10 @@
       var recordList;
       var recording;
       var rls;
+      var connections = [];
+      for (var b in blocks) {
+        connections.push(-1);
+      }
 
       function moveTarget(x, y, t) {
         // console.log(t, x, y);
@@ -88,11 +92,16 @@
         };
       }
       resetValues();
+
+      function saveDrawing() {
+        alert("this functionality is not yet ready and is under construction!");
+      }
     </script>
     <div class="container">
       <div class="col">
         <button onclick="connectDevice()">Connect</button>
         <button onclick="makeDrawing()">Make drawing</button>
+        <button onclick="saveDrawing()">Save & Export</button>
         <button onclick="resetValues()">reset data</button>
         <table>
           <tbody><tr>
