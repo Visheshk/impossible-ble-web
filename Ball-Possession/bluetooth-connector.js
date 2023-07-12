@@ -149,6 +149,7 @@ function accelerometerDataChanged(event) {
     var x = event.target.value.getInt16(0, true);
     var y = event.target.value.getInt16(2, true);
     var z = event.target.value.getInt16(4, true);
+    globalX = x; globalY = y; globalZ = z;
     ax = x;
     ay = y;
     az = z;
@@ -160,7 +161,7 @@ function accelerometerDataChanged(event) {
 
     // last accelerometer value
     av = calculatedData["lastAccel"];
-    console.log(calculatedData["velocity"], calculatedData["speed"]);
+    // console.log(calculatedData["velocity"], calculatedData["speed"]);
     xVel = calculatedData["velocity"].x + (av["x"] + x)*0.5*(timeNow - av["time"]);
     yVel = calculatedData["velocity"].y + (av["y"] + x)*0.5*(timeNow - av["time"]);
     zVel = calculatedData["velocity"].z + (av["z"] + x)*0.5*(timeNow - av["time"]);
