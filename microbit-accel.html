@@ -19,6 +19,8 @@
     </head>
     <!-- <script src="./Path Transitions_files/d3.v3.min.js" charset="utf-8"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+
     
     <script type="text/javascript">
         var recordList = [];
@@ -52,8 +54,10 @@
                 <td id="accelerometerZ">-</td>
             </tr>
         </tbody></table>
-
-        <script src="./microbit-accel_files/grapher.js"> </script>
+        <div id="tester" style="width:600px;height:250px;"></div>
+        
+        <script src="./microbit-accel_files/g2.js"> </script>
+        <!-- <script src="./microbit-accel_files/grapher.js"> </script> -->
         <h2>Accelerometer Period (ms)</h2>
         <input type="text" id="accelerometerPeriodText" disabled="true">
         <button onclick="readAccelerometerPeriod()">Read</button>

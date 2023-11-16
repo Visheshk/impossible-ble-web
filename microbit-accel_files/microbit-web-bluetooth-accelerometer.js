@@ -142,23 +142,58 @@ function round10 (val) {
     return parseInt(Math.round(val / 10) * 10);
 }
 
+// TESTER = document.getElementById('tester');
+TESTER = document.getElementById('tester');
+function rand() {
+  // return Math.random();
+    return 100;
+}
+
+Plotly.newPlot( TESTER, [{
+    y: [1,2,3].map(rand),
+      mode: 'lines',
+      line: {color: '#80CAF6'}
+    }, {
+    y: [1,2,3].map(rand),
+      mode: 'lines',
+      line: {color: '#DF56F1'}
+    }, {
+    y: [1,2,3].map(rand),
+      mode: 'lines',
+      line: {color: '#DF12xx'}
+    }, {
+    y: [1,2,3].map(rand),
+      mode: 'lines',
+      line: {color: '#DF12xx'}
+}], {
+    margin: { t: 0 } 
+} );
+
 
 function accelerometerDataChanged(event) {
     var x = event.target.value.getInt16(0, true);
     var y = event.target.value.getInt16(2, true);
     var z = event.target.value.getInt16(4, true);
-    ax = x;
-    ay = y;
-    az = z;
+    ax = round10(x);
+    ay = round10(y);
+    az = round10(z);
     document.getElementById("accelerometerX").innerHTML = round10(x); // Little Endian
     document.getElementById("accelerometerY").innerHTML = round10(y)// Little Endian
     document.getElementById("accelerometerZ").innerHTML = round10(z); // Little Endian
+    t = new Date().getTime();
     if (recording == true) {
         // console.log("accel recording true");
         recordList.push([x, y, z, new Date()]);
         // console.log(rls);
+        mag = ax**2 + ay ** 2 + az ** 2;
+        mag = Math.floor(mag ** 0.5); 
         rls["x"].push(x); rls["y"].push(y); rls["z"].push(z); rls["ts"].push(new Date());
+        Plotly.extendTraces('tester', { 
+            y: [[ax], [ay], [az], [mag]]
+            // x: [[t], [t], [t]]
+        }, [0, 1, 2, 3])
     }
+
 }
 
 
